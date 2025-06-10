@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>منصة إديسون – تصميم 2025</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Noto+Kufi+Arabic:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Video.js -->
+  <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet">
+  <link href="https://unpkg.com/videojs-seek-buttons/dist/videojs-seek-buttons.css" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Pre‑connect لأداء أسرع لإطارات mediadelivery -->
+  <link rel="preconnect" href="https://iframe.mediadelivery.net" crossorigin>
+
+  <!-- Polyfills -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.2.8/es6-promise.auto.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    /* ===== لوحة الألوان المُحدَّثة 2025 ===== */
+    :root{
+      --primary-1:#3B2FEA; /* أزرق بنفسجي */
+      --primary-2:#007AFF; /* أزرق آبل */
+      --primary-3:#00FFC2; /* أخضر مائي */
+      --accent:#FFD54F;    /* ذهبي لطيف */
+      --radius:20px;
+      --speed:.35s cubic-bezier(.4,0,.2,1);
+      --bg:#080A11;
+      --bg-glass:rgba(255,255,255,.06);
+      --text:#F8F9FE;
+      --card:rgba(255,255,255,.05);
+      --border:rgba(255,255,255,.12);
+      --hover:rgba(255,255,255,.08);
+      --gradient:linear-gradient(135deg,var(--primary-1) 0%,var(--primary-2) 40%,var(--primary-3) 100%);
+    }
+    [data-theme="light"]{
+      --bg:#FFFFFF;
+      --bg-glass:rgba(0,0,0,.03);
+      --text:#1C1E24;
+      --card:#F5F8FC;
+      --border:#CDD6E1;
+      --hover:rgba(0,0,0,.05);
+    }
+
+    /* ===== أساسيات ===== */
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Tajawal','Noto Kufi Arabic',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;scroll-behavior:smooth;min-height:100vh;overflow-y:auto;position:relative;isolation:isolate}
+    body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 15% 20%,#2B2FFF33 0%,transparent 60%),radial-gradient(circle at 85% 85%,#00FFC233 0%,transparent 60%);}    
+    img{max-width:100%;display:block}
+    button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+    /* ===== Animations ===== */
+    @keyframes fadeSlide{0%{opacity:0;transform:translateY(30px)}100%{opacity:1;transform:translateY(0)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ===== رأس الصفحة ===== */
+    header{position:sticky;top:0;z-index:1000;display:flex;align-items:center;gap:1rem;padding:1rem 1.6rem;background:var(--bg-glass);backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid var(--border)}
+    .site-title{font-size:clamp(1.4rem,4.5vw,2.1rem);font-weight:700;background:var(--gradient);-webkit-background-clip:text;background-clip:text;color:transparent;transition:transform var(--speed);white-space:nowrap}
+    .site-title:hover{transform:scale(1.08)}
+
+    /* ===== الأزرار & اللمسة الزجاجية ===== */
+    .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.85rem 1.45rem;border-radius:var(--radius);color:var(--text);font-weight:600;overflow:hidden;position:relative;white-space:nowrap;background:var(--card);border:1px solid var(--border);transition:background var(--speed),transform var(--speed),box-shadow var(--speed)}
+    .btn::before{content:"";position:absolute;inset:0;background:var(--gradient);opacity:0;transition:opacity var(--speed)}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.45)}
+    .btn:hover::before{opacity:1}
+    .btn i{stroke-width:2.2}
+
+    /* ===== البحث ===== */
+    .search-container{flex:1;max-width:650px;display:flex;gap:.6rem}
+    .search-container input{flex:1;padding:1rem;font-size:1rem;background:var(--card);color:var(--text);border:2px solid var(--border);border-radius:var(--radius);transition:border var(--speed),box-shadow var(--speed)}
+    .search-container input:focus{outline:none;border-color:var(--primary-2);box-shadow:0 0 0 3px #007aff40}
+
+    /* ===== الصفحات ===== */
+    .page{display:none;padding:2.2rem;max-width:1350px;margin-inline:auto}
+    .page.active{display:block;animation:fadeSlide .6s ease}
+
+    /* ===== شبكة المدرسين ===== */
+    .teachers-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem}
+    .teacher-card{width:100%;background:var(--card);padding:1.75rem 1.3rem;border-radius:var(--radius);border:1px solid var(--border);text-align:center;cursor:pointer;position:relative;overflow:hidden;transition:transform var(--speed),box-shadow var(--speed),border var(--speed)}
+    .teacher-card:hover{transform:translateY(-10px);box-shadow:0 20px 44px rgba(0,0,0,.55);border-color:var(--primary-2)}
+    .teacher-card:after{content:"";position:absolute;inset:-150% -50%;background:var(--gradient);opacity:.16;transform:rotate(25deg)}
+    .teacher-img{width:170px;height:170px;border-radius:50%;object-fit:cover;margin:0 auto 1.2rem;border:5px solid var(--primary-3)}
+    .teacher-name{font-size:1.35rem;font-weight:700;margin-bottom:.2rem;line-height:1.3}
+    .teacher-subject{opacity:.85;font-size:.95rem}
+
+    /* ===== صفحة المدرس ===== */
+    .teacher-info{display:flex;align-items:center;gap:1.6rem;background:var(--card);padding:1.8rem;border-radius:var(--radius);border:1px solid var(--border);flex-wrap:wrap}
+    .teacher-img-lg{width:140px;height:140px;border-radius:50%;object-fit:cover;border:5px solid var(--primary-3)}
+
+    /* ===== الفصول & المحاضرات ===== */
+    .classes-list{display:grid;gap:1.6rem;margin-top:1.6rem}
+    .class-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
+    .class-header{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;cursor:pointer;user-select:none;background:var(--bg-glass);backdrop-filter:blur(10px);border-right:5px solid var(--primary-1);transition:background var(--speed)}
+    .class-header:hover{background:var(--hover)}
+    .class-header span{transition:transform var(--speed)}
+    .class-header.open span{transform:rotate(180deg)}
+    .lectures-list{display:none;flex-direction:column;gap:.9rem;padding:1.25rem 1.8rem 1.1rem 0}
+    .lecture-item{position:relative;padding:1rem 1.25rem 1rem 2.8rem;background:var(--hover);border-right:4px solid var(--primary-3);border-radius:var(--radius);cursor:pointer;transition:background var(--speed),transform var(--speed)}
+    .lecture-item:hover{transform:translateX(12px)}
+    .checkmark{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--accent);font-size:1.15rem}
+
+    /* ===== الفيديو ===== */
+    .video-page{display:flex;flex-direction:column;gap:2.2rem}
+    .video-container{position:relative;width:100%;height:360px;background:#000;border-radius:var(--radius);overflow:hidden}
+    .video-js{position:absolute;inset:0;width:100%!important;height:100%!important}
+    #iframeContainer{position:absolute;inset:0;width:100%;height:100%}
+    .seek-controls{display:flex;justify-content:center;gap:1.2rem;flex-wrap:wrap}
+    .video-details{background:var(--card);padding:1.8rem;border-radius:var(--radius);border:1px solid var(--border);text-align:center}
+
+    /* Loader */
+    #loader{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:3}
+    #loader.show{display:flex}
+    .spinner{width:68px;height:68px;border:6px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite}
+
+    /* ===== المودالات ===== */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(18px) saturate(180%);display:flex;justify-content:center;align-items:center;padding:1.2rem;z-index:2000}
+    .modal-content{position:relative;width:100%;max-width:440px;background:var(--bg-glass);border:1px solid var(--border);border-radius:calc(var(--radius)*1.2);padding:2.2rem 1.9rem 2.6rem;text-align:center;overflow:hidden;animation:fadeSlide .55s ease;isolation:isolate}
+    .modal-content::before{content:"";position:absolute;inset:-2px;background:var(--gradient);filter:blur(42px);opacity:.5;z-index:-1}
+    .modal-content img{width:175px;height:175px;object-fit:cover;border-radius:50%;margin:0 auto 1.2rem;border:5px solid var(--primary-2)}
+    .modal-content h3{font-size:1.45rem;margin-bottom:.65rem}
+    .modal-content p{font-size:1.02rem;margin-bottom:1.6rem;opacity:.92}
+    .modal-content .btn{width:100%;justify-content:center}
+    .close-modal{position:absolute;top:.8rem;right:.8rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--hover);font-size:1.4rem;color:var(--text);transition:background var(--speed),transform var(--speed)}
+    .close-modal:hover{background:var(--primary-2);transform:rotate(90deg)}
+
+    /* ===== استجابة الشاشة الصغيرة ===== */
+    @media(max-width:600px){
+      header{flex-wrap:wrap;padding:.95rem 1rem;gap:.8rem}
+      .search-container{order:3;width:100%}
+      .btn span{display:none}
+      .teacher-img{width:150px;height:150px}
+      .video-details{padding:1.4rem}
+      .modal-content{max-width:96%;padding:1.9rem 1.25rem 2.1rem}
+      /* الفيديو يعرض عرض الشاشة بالكامل */
+      .video-container{width:100vw !important;height:260px !important;margin-inline:calc(-1*((100vw-100%)/2));border-radius:0 !important}
+    }
+
+  </style>
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header>
+    <h1 class="site-title" onclick="navigate('home')">منصة إديسون</h1>
+    <button id="themeToggle" class="btn"><i data-lucide="sun"></i><span>المظهر</span></button>
+    <button id="examsButton" class="btn"><i data-lucide="file-text"></i><span>امتحانات الأساتذة</span></button>
+    <div class="search-container">
+      <input id="searchInput" type="text" placeholder="ابحث عن مدرس…">
+      <button id="searchButton" class="btn"><i data-lucide="search"></i></button>
+    </div>
+  </header>
+
+  <!-- ===== Pages ===== -->
+  <div id="homePage" class="page active"><div id="teachersGrid" class="teachers-grid"></div></div>
+
+  <div id="classesPage" class="page">
+    <button class="btn back-button" onclick="navigate('home')"><i data-lucide="arrow-right"></i>الرجوع للمدرسين</button>
+    <div class="teacher-info">
+      <img id="teacherImage" class="teacher-img-lg" alt=""><div><h2 id="teacherName"></h2><p id="teacherSubject" class="teacher-subject"></p></div>
+    </div>
+    <div id="classesList" class="classes-list"></div>
+  </div>
+
+  <div id="videoPage" class="page">
+    <div class="video-page">
+      <div class="video-container">
+        <div id="loader"><div class="spinner"></div></div>
+        <div id="iframeContainer" style="display:none"></div>
+        <video id="player" class="video-js vjs-default-skin" playsinline controls></video>
+      </div>
+      <div class="seek-controls">
+        <button id="back10" class="btn"><i data-lucide="rotate-ccw"></i>← 10 تاخير</button>
+        <button id="fwd10" class="btn">10 تقديم →<i data-lucide="rotate-cw"></i></button>
+      </div>
+      <div class="video-details">
+        <h2 id="videoTitle"></h2>
+        <p id="videoDescription"></p>
+        <button class="btn back-button" onclick="navigate('classes')"><i data-lucide="arrow-right"></i>العودة للفصول</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Telegram Modal ===== -->
+  <div id="telegramModal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal()">×</button>
+      <img src="https://i.imghippo.com/files/fZBH8788mLc.jpg" alt="">
+      <h3>أهلاً بك في منصة إديسون!</h3>
+      <p>اشترك في قناتنا على تليجرام للحصول على أحدث الإعلانات والدورات المجانية 🪄</p>
+      <a href="https://t.me/od7cc" target="_blank" class="btn"><i data-lucide="send"></i>اذهب للقناة</a>
+    </div>
+  </div>
+
+  <!-- ===== Year Selection Modal ===== -->
+  <div id="yearModal" class="modal" style="display:none">
+    <div class="modal-content">
+      <h3>اختر سنتك الدراسية</h3>
+      <p>يرجى اختيار السنة الدراسية لمشاهدة المدرسين والدورات المناسبة.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;margin-top:1.2rem">
+        <button class="btn" onclick="chooseYear('2025')">2025</button>
+        <button class="btn" onclick="chooseYear('2026')">2026</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Scripts ===== -->
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+  <script src="https://unpkg.com/videojs-seek-buttons/dist/videojs-seek-buttons.min.js"></script>
+
+  <script type="text/babel">
+    /* ========= السمــة ========= */
+    function initializeTheme(){const stored=localStorage.getItem('theme');const preferred=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';const theme=stored||preferred;document.documentElement.setAttribute('data-theme',theme);updateThemeIcon(theme);}
+    function updateThemeIcon(theme){document.querySelector('#themeToggle i').setAttribute('data-lucide',theme==='dark'?'sun':'moon');lucide.createIcons();}
+    initializeTheme();
+    document.getElementById('themeToggle').addEventListener('click',()=>{const cur=document.documentElement.getAttribute('data-theme');const next=cur==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('theme',next);updateThemeIcon(next);});
+
+    /* ========= زر امتحانات الأساتذة ========= */
+    document.getElementById('examsButton').addEventListener('click',()=>{window.location.href='sss.html';});
+
+    /* ========= التقدم ========= */
+    let completedLectures=JSON.parse(localStorage.getItem('completedLectures')||'{}');
+    const saveCompleted=()=>localStorage.setItem('completedLectures',JSON.stringify(completedLectures));
+    const markLectureCompleted=url=>{if(!completedLectures[url]){completedLectures[url]=true;saveCompleted();if(currentTeacher)renderClasses(currentTeacher.classes);}};
+
+    /* ========= مشغل الفيديو & Iframe ========= */
+    const videoPlayer=videojs('player',{controls:true,playbackRates:[0.5,1,1.25,1.5,2],html5:{hls:{overrideNative:true}},controlBar:{pictureInPictureToggle:false,fullscreenToggle:true,volumePanel:false}});
+    videoPlayer.seekButtons({forward:10,back:10});
+    document.getElementById('back10').onclick=()=>videoPlayer.currentTime(Math.max(0,videoPlayer.currentTime()-10));
+    document.getElementById('fwd10').onclick=()=>videoPlayer.currentTime(Math.min(videoPlayer.duration(),videoPlayer.currentTime()+10));
+    const iframeContainer=document.getElementById('iframeContainer'),loader=document.getElementById('loader');
+
+    /* ========= صفحات ========= */
+    const pages={home:homePage,classes:classesPage,video:videoPage};
+    function navigate(page){
+      window.scrollTo({top:0,behavior:'smooth'});
+      if(page!=='video'){videoPlayer.pause();videoPlayer.currentTime(0);iframeContainer.innerHTML='';iframeContainer.style.display='none';loader.classList.remove('show');videoPlayer.el().style.display='block';}
+      Object.values(pages).forEach(p=>p.classList.remove('active'));pages[page].classList.add('active');
+    }
+
+    /* ========= بيانات المدرسين ========= */
+    const teachersGrid=document.getElementById('teachersGrid'),searchInput=document.getElementById('searchInput'),searchBtn=document.getElementById('searchButton');
+    let teachers=[],currentTeacher=null,currentClassIndex=0,currentLectureIndex=0,currentLectureLink='';
+
+    function renderTeachers(list=teachers){teachersGrid.innerHTML=!list.length?'<p>لا توجد نتائج مطابقة.</p>':list.map(t=>`<div class="teacher-card" onclick="showTeacher('${t.id}')"><img class="teacher-img" src="${t.image}" alt="${t.name}"><h3 class="teacher-name">${t.name}</h3><p class="teacher-subject">${t.subject}</p></div>`).join('');}
+
+    window.showTeacher=id=>{currentTeacher=teachers.find(t=>t.id==id);if(!currentTeacher)return;teacherImage.src=currentTeacher.image;teacherName.textContent=currentTeacher.name;teacherSubject.textContent=currentTeacher.subject;renderClasses(currentTeacher.classes);navigate('classes');};
+
+    function renderClasses(classesData){classesList.innerHTML=classesData.map((cls,ci)=>{const lectures=cls.lectures.map((lec,li)=>{const done=completedLectures[lec.url];return `<div class="lecture-item" onclick="playVideo(${ci},${li},'${lec.url}','${lec.title}','${lec.description}')">${li+1}. ${lec.title}${done?'<span class="checkmark">✔</span>':''}</div>`;}).join('');return `<div class="class-card"><div class="class-header" onclick="toggleLectures(this)"><h3>${cls.name}</h3><span data-lucide="chevron-down"></span></div><div class="lectures-list">${lectures}</div></div>`;}).join('');lucide.createIcons();}
+
+    window.toggleLectures=header=>{const list=header.parentElement.querySelector('.lectures-list');const icon=header.querySelector('[data-lucide]');const open=list.style.display!=='flex';list.style.display=open?'flex':'none';header.classList.toggle('open',open);icon.setAttribute('data-lucide',open?'chevron-up':'chevron-down');lucide.createIcons();};
+
+    /* ========= تشغيل الفيديو أو الإطار مع لودر ========= */
+    window.playVideo=(ci,li,url,title,desc)=>{
+      [currentClassIndex,currentLectureIndex,currentLectureLink]=[ci,li,url];videoTitle.textContent=title;videoDescription.textContent=desc;
+      const isEmbed=url.includes('iframe.mediadelivery.net');
+      if(isEmbed){
+        videoPlayer.pause();videoPlayer.el().style.display='none';loader.classList.add('show');
+        iframeContainer.style.display='block';
+        const iframe=document.createElement('iframe');
+        iframe.src=url;iframe.allow='accelerometer;autoplay;encrypted-media;picture-in-picture';iframe.allowFullscreen=true;iframe.style.cssText='width:100%;height:100%;border:none';
+        iframe.onload=()=>loader.classList.remove('show');
+        iframeContainer.innerHTML='';iframeContainer.appendChild(iframe);
+      }else{
+        loader.classList.remove('show');iframeContainer.innerHTML='';iframeContainer.style.display='none';videoPlayer.el().style.display='block';
+        videoPlayer.src({src:url,type:url.endsWith('.m3u8')?'application/vnd.apple.mpegurl':'video/mp4'});videoPlayer.play();
+      }
+      navigate('video');
+    };
+
+    videoPlayer.on('ended',()=>{markLectureCompleted(currentLectureLink);const cls=currentTeacher.classes;let [ci,li]=[currentClassIndex,currentLectureIndex+1];if(li>=cls[ci].lectures.length){ci++;li=0;}if(ci<cls.length){const next=cls[ci].lectures[li];playVideo(ci,li,next.url,next.title,next.description);}});
+
+    /* ========= البحث ========= */
+    function handleSearch(){const term=searchInput.value.trim().toLowerCase();renderTeachers(teachers.filter(t=>t.name.toLowerCase().includes(term)||t.subject.toLowerCase().includes(term)));}let searchTimeout;
+    searchInput.addEventListener('input',()=>{clearTimeout(searchTimeout);searchTimeout=setTimeout(handleSearch,250);});searchBtn.addEventListener('click',handleSearch);
+
+    /* ========= اختيار السنة ========= */
+    let dataUrl='';function showYearModal(){yearModal.style.display='flex'}function closeYearModal(){yearModal.style.display='none'}
+    function chooseYear(year){dataUrl=year==='2025'?'https://edson1.glitch.me/api/data':'https://edson1.glitch.me/api/2data';closeYearModal();loadData(dataUrl);}
+
+    /* ========= تحميل البيانات ========= */
+    function loadData(endpoint){const err='<p style="color:red">حدث خطأ في تحميل البيانات.</p><button class="btn" onclick="location.reload()">إعادة المحاولة</button>';fetch(endpoint,{headers:{Referer:'https://careful-burnt-honesty.glitch.me/'}}).then(r=>{if(!r.ok)throw new Error();return r.json();}).then(data=>{teachers=data.teachers;renderTeachers();}).catch(()=>{teachersGrid.innerHTML=err;});}
+
+    /* ========= Modal & حماية النسخ ========= */
+    window.closeModal=()=>{telegramModal.style.display='none';showYearModal();}
+    telegramModal.addEventListener('click',e=>{if(e.target.id==='telegramModal')closeModal();});
+    document.addEventListener('contextmenu',e=>e.preventDefault());document.addEventListener('selectstart',e=>e.preventDefault());
+    if(getComputedStyle(telegramModal).display==='none'){showYearModal();}
+    lucide.createIcons();
+  </script>
+
+  <script>
+  // فحص إذا المستخدم يفتح الموقع من داخل تطبيق تليجرام
+  if(navigator.userAgent.toLowerCase().includes('telegram')){
+    window.location.href="googlechrome://navigate?url="+encodeURIComponent(window.location.href);
+    setTimeout(()=>{window.location.href="https://edson1.glitch.me"},1500);
+  }
+  </script>
+</body>
+</html>
